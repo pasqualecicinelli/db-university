@@ -3,8 +3,8 @@
 ```sql
 -- 1. Contare quanti iscritti ci sono stati ogni anno
 
-SELECT COUNT(`year`) `registered_every_year`, `year`
-FROM `courses`
+SELECT COUNT(*) `numb_iscritti`, YEAR(`enrolment_date`) `year`
+FROM `students`
 GROUP BY (`year`);
 ```
 
@@ -128,7 +128,7 @@ GROUP BY  `teachers`.`name`, `teachers`.`surname`;
 ```sql
 -- 7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente, filtrare i tentativi con voto minimo 18.
 
-SELECT `students`.`name` `student_name`, `students`.`surname` `student_surname`, COUNT(`students`.`surname`) `number_of_exam_tests`, MAX(`exam_student`.`vote`) `vote_max`, MIN(`exam_student`.`vote`) `vote_min`
+SELECT COUNT(*),`students`.`id` `id_stud`,`courses`.`id` `id_course`, `courses`.`name` `course_name` , `students`.`name` `student_name`, `students`.`surname` `student_surname`,  MAX(`exam_student`.`vote`) `vote_max`
 FROM `students`
 
 INNER JOIN `exam_student`
@@ -137,5 +137,10 @@ ON `students`.`id`=`exam_student`.`student_id`
 INNER JOIN `exams`
 ON `exam_student`.`exam_id`=`exams`.`id`
 
-GROUP BY `students`.`name`, `students`.`surname`;
+JOIN `courses`
+ON `exams`.`course_id`=`courses`.`id`
+
+GROUP BY `students`.`id`,`courses`.`id`
+
+HAVING `vote_max`>=18;
 ```
